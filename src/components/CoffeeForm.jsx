@@ -4,6 +4,12 @@ import { coffeeOptions } from "../utils";
 function CoffeeForm() {
   const [selectedCoffee, setSelectedCoffee] = useState(null);
   const [showCoffeeTypes, setShowCoffeeTypes] = useState(false);
+  const [coffeeCost, setCoffeeCost] = useState(0);
+  const [hour, setHour] = useState(0);
+  const [min, setMin] = useState(0);
+
+  function handleSubmitForm() {}
+
   const hours = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
     21, 22, 23,
@@ -67,13 +73,27 @@ function CoffeeForm() {
           })}
         </select>
       )}
-      <h4>ADd the cost ($)</h4>
-      <input type="number" className="w-full" placeholder="4.50" />
+      <h4>Add the cost ($)</h4>
+      <input
+        type="number"
+        className="w-full"
+        placeholder="4.50"
+        value={coffeeCost}
+        onChange={(e) => {
+          setCoffeeCost(e.target.value);
+        }}
+      />
       <h4>Time since consumption</h4>
       <div className="time-entry">
         <div>
           <h6>Hours</h6>
-          <select name="hours-select" id="hours-select">
+          <select
+            onChange={(e) => {
+              setHour(e.target.value);
+            }}
+            name="hours-select"
+            id="hours-select"
+          >
             {hours.map((hour, index) => {
               return (
                 <option key={index} value={hour}>
@@ -85,7 +105,13 @@ function CoffeeForm() {
         </div>
         <div>
           <h6>Mins</h6>
-          <select name="mins-select" id="mins-select">
+          <select
+            onChange={(e) => {
+              setMin(e.target.value);
+            }}
+            name="mins-select"
+            id="mins-select"
+          >
             {mins.map((min, index) => {
               return (
                 <option key={index} value={min}>
@@ -96,7 +122,7 @@ function CoffeeForm() {
           </select>
         </div>
       </div>
-      <button>
+      <button onClick={handleSubmitForm}>
         <p>Add entry</p>
       </button>
     </>
