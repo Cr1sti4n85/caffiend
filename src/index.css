@@ -83,6 +83,10 @@ h2 {
   width: 100%;
 }
 
+.coffee-button-selected {
+  border-color: var(--border-highlight) !important;
+}
+
 .stats-grid,
 .time-entry {
   display: grid;
