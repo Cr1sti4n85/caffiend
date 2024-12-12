@@ -106,3 +106,34 @@ export const coffeeOptions = [
   { name: "AMP Energy Drink (16oz)", caffeine: 142 },
   { name: "Zipfizz (1 tube)", caffeine: 100 },
 ];
+
+const halfLifeHours = 5;
+
+export function calculateCurrentCaffeineLevel(historyData) {
+  const currentTime = Date.now();
+  const halfLife = halfLifeHours * 60 * 60 * 1000; // 5 hours in milliseconds
+  const maxAge = 48 * 60 * 60 * 1000; // 48 hours in milliseconds
+
+  let totalCaffeine = 0;
+
+  for (const [timestamp, entry] of Object.entries(historyData)) {
+    const timeElapsed = currentTime - parseInt(timestamp);
+
+    // Ignore entries older than 48 hours
+    if (timeElapsed <= maxAge) {
+      const caffeineInitial = getCaffeineAmount(entry.name);
+      // Calculate the remaining caffeine using the half-life formula
+      const remainingCaffeine =
+        caffeineInitial * Math.pow(0.5, timeElapsed / halfLife);
+      totalCaffeine += remainingCaffeine;
+    }
+  }
+
+  return totalCaffeine.toFixed(2);
+}
+
+// Helper function to get caffeine amount based on the coffee name
+export function getCaffeineAmount(coffeeName) {
+  const coffee = coffeeOptions.find((c) => c.name === coffeeName);
+  return coffee ? coffee.caffeine : 0;
+}
