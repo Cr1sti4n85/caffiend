@@ -188,3 +188,38 @@ export function calculateCoffeeStats(coffeeConsumptionHistory) {
     totalCost: totalCost.toFixed(2),
   };
 }
+
+export function getTopThreeCoffees(historyData) {
+  const coffeeCount = {};
+
+  // Count occurrences of each coffee type
+  for (const entry of Object.values(historyData)) {
+    const coffeeName = entry.name;
+    if (coffeeCount[coffeeName]) {
+      coffeeCount[coffeeName]++;
+    } else {
+      coffeeCount[coffeeName] = 1;
+    }
+  }
+
+  // Convert coffeeCount object to an array of [coffeeName, count] and sort by count
+  const sortedCoffees = Object.entries(coffeeCount).sort((a, b) => b[1] - a[1]);
+
+  // Calculate total coffees consumed
+  const totalCoffees = Object.values(coffeeCount).reduce(
+    (sum, count) => sum + count,
+    0
+  );
+
+  // Get the top 3 most popular coffees
+  const topThree = sortedCoffees.slice(0, 3).map(([coffeeName, count]) => {
+    const percentage = ((count / totalCoffees) * 100).toFixed(2);
+    return {
+      coffeeName: coffeeName,
+      count: count,
+      percentage: percentage + "%",
+    };
+  });
+
+  return topThree;
+}

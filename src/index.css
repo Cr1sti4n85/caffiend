@@ -132,6 +132,11 @@ h2 {
   gap: 1rem;
 }
 
+.stat-table {
+  width: 100%;
+  grid-column: span 2 / span 2;
+}
+
 .w-full {
   width: 100%;
   max-width: unset;
