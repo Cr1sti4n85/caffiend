@@ -137,6 +137,17 @@ h2 {
   grid-column: span 2 / span 2;
 }
 
+.coffee-history {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.coffee-history i {
+  font-size: 1.5rem;
+}
+
 .w-full {
   width: 100%;
   max-width: unset;
