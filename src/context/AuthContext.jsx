@@ -6,7 +6,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
@@ -46,6 +47,40 @@ export function AuthProvider({ children }) {
     login,
     logout,
   };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      //if there's no user, empty user state and return
+      if (!user) {
+        console.log("no active user");
+        return;
+      }
+
+      //If user, check if there is data, fetch it and update global state
+      //1. create reference for the document
+      const docRef = doc(db, "users", user.uid);
+      //get the doc and snapshot it to see if there's anything there
+      const docSnap = await getDoc(docRef);
+
+      let fireBaseData = {};
+
+      if (docSnap.exists()) {
+        console.log("Found user data");
+        fireBaseData = docSnap.data();
+      }
+
+      setGlobalData(fireBaseData);
+
+      try {
+        setIsLoading(true);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
