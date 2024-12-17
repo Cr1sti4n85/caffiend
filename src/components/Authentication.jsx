@@ -1,12 +1,43 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 
-function Authentication() {
+function Authentication(props) {
+  const { handleCloseModal } = props;
   const [isRegistration, setIsRegistration] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  async function handleAuthenticate() {}
+  const { signup, login } = useAuth();
+
+  async function handleAuthenticate() {
+    if (
+      !email ||
+      !email.includes("@") ||
+      !password ||
+      password.length < 6 ||
+      isAuthenticating
+    ) {
+      return;
+    }
+
+    try {
+      setIsAuthenticating(true);
+      if (isRegistration) {
+        //register a user
+        await signup(email, password);
+      } else {
+        //login user
+        await login(email, password);
+      }
+
+      handleCloseModal();
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  }
 
   return (
     <>
@@ -29,7 +60,7 @@ function Authentication() {
         }}
       />
       <button onClick={handleAuthenticate}>
-        <p>Submit</p>
+        <p>{isAuthenticating ? "Authenticating..." : "Submit"}</p>
       </button>
       <hr />
       <div className="register-container">

@@ -34,7 +34,11 @@ function CoffeeForm(props) {
             setShowModal(false);
           }}
         >
-          <Authentication />
+          <Authentication
+            handleCloseModal={() => {
+              setShowModal(false);
+            }}
+          />
         </Modal>
       )}
       <div className="section-header">
