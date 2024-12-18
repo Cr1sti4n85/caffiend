@@ -26,19 +26,16 @@ function CoffeeForm(props) {
   ];
 
   const mins = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+
+  function handleCloseModal() {
+    setShowModal(false);
+  }
+
   return (
     <>
       {showModal && (
-        <Modal
-          handleCloseModal={() => {
-            setShowModal(false);
-          }}
-        >
-          <Authentication
-            handleCloseModal={() => {
-              setShowModal(false);
-            }}
-          />
+        <Modal handleCloseModal={handleCloseModal}>
+          <Authentication handleCloseModal={handleCloseModal} />
         </Modal>
       )}
       <div className="section-header">
