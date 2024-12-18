@@ -2,6 +2,9 @@ import { useState } from "react";
 import { coffeeOptions } from "../utils";
 import Modal from "./Modal";
 import Authentication from "./Authentication";
+import { useAuth } from "../context/AuthContext";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../../firebase";
 
 function CoffeeForm(props) {
   const { isAuthenticated } = props;
@@ -13,10 +16,52 @@ function CoffeeForm(props) {
   const [hour, setHour] = useState(0);
   const [min, setMin] = useState(0);
 
-  function handleSubmitForm() {
+  const { globalData, setGlobalData, globalUser } = useAuth();
+
+  async function handleSubmitForm() {
     if (!isAuthenticated) {
       setShowModal(true);
       return;
+    }
+
+    try {
+      //submit form only if it is completed
+      if (!selectedCoffee) return;
+
+      //create new data object
+      const newGlobalData = {
+        ...(globalData || {}),
+      };
+
+      const nowTime = Date.now();
+
+      const timeToSubstract = hour * 60 * 60 * 1000 + min * 60 * 100;
+
+      const timestamp = nowTime - timeToSubstract;
+
+      const newData = { name: selectedCoffee, cost: coffeeCost };
+
+      newGlobalData[timestamp] = newData;
+      //update global state
+
+      setGlobalData(newGlobalData);
+
+      //persist data in firestore
+      const userRef = doc(db, "users", globalUser.uid);
+      await setDoc(
+        userRef,
+        {
+          [timestamp]: newData,
+        },
+        { merge: true } //not overwrite info, but merge it
+      );
+
+      setSelectedCoffee(null);
+      setHour(0);
+      setMin(0);
+      setCoffeeCost(0);
+    } catch (error) {
+      console.log(error);
     }
   }
 
